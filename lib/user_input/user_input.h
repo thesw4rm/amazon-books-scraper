@@ -12,6 +12,6 @@
          * @return char*
          * Returns input URL to scrape
          */
-char *getScrapeLink();
+char* getScrapeLink();
 
 #endif //WEBSCRAPER_MAIN_INPUTS_H
