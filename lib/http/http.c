@@ -170,8 +170,9 @@ char *noSSLRequest(REQUEST_HEADER_INFO *request_header_info) {
         response = realloc(response, sizeof(response) + RESPONSE_BUFFER_SIZE);
         strcat(response, buffer); //Append to the end, safe because recv takes care of limiting buffer size
     }
-
-    printf(ANSI_COLOR_GREEN "\nLOG: Received HTTP response from socket at descriptor %d to IP %s and port %d.\n" ANSI_COLOR_RESET,
+    response = realloc(response, sizeof(response) + sizeof(char));
+    response[strlen(response)] = '\0';
+    printf(ANSI_COLOR_GREEN "\nLOG: Received HTTP response from socket at descriptor %d to IP %s and port %d.\n\n\n\n\n" ANSI_COLOR_RESET,
            sockFD,
            serverIP, serverPort);
     if (close(sockFD) < 0) {
