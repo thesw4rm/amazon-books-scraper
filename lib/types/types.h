@@ -4,6 +4,8 @@
 
 #ifndef WEBSCRAPER_TYPES_H
 #define WEBSCRAPER_TYPES_H
+#define ANSI_COLOR_GREEN   "\x1b[32m"
+#define ANSI_COLOR_RESET   "\x1b[0m"
 
 typedef int bool;
 #define true 1
