@@ -8,7 +8,7 @@
 * @return request inputted URL
 */
 char *getScrapeLink() {
-    return "https://www.amazon.com/_/dp/1449355730?tag=oreilly20-20";
+    return "http://mirror.vcu.edu/";//"https://www.amazon.com/_/dp/1449355730?tag=oreilly20-20";
 }
 
 REQUEST_HEADER_INFO* extractRequestDataFromURL(char* URL) {
