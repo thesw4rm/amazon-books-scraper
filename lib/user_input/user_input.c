@@ -12,7 +12,7 @@ char *getScrapeLink() {
 }
 
 REQUEST_HEADER_INFO* extractRequestDataFromURL(char* URL) {
-    printf("Extracting request header data...\n\n");
+    printf(ANSI_COLOR_GREEN "LOG: Extracting request header data...\n");
     char *host;
     char *path;
     bool ssl = false;
@@ -47,12 +47,13 @@ REQUEST_HEADER_INFO* extractRequestDataFromURL(char* URL) {
 
 
 
-    printf("\tExtracted host: Host = %s", host);
-    printf("\tExtracted path: Path = %s", path);
+    printf("\tExtracted host: Host = %s\n", host);
+    printf("\tExtracted path: Path = %s\n", path);
     if (ssl)
         printf("\tExtracted ssl: ssl = true\n");
     else
         printf("\tExtracted ssl: ssl = false\n");
+    printf(ANSI_COLOR_RESET);
     REQUEST_HEADER_INFO *requestInfo = (REQUEST_HEADER_INFO *) malloc(sizeof(struct requestHeaderInfo));
     requestInfo->host = host;
     requestInfo->path = path;

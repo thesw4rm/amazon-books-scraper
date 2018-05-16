@@ -9,7 +9,7 @@
 #include "../user_input/user_input.h"
 
 #define REQUEST_HEADER_MAX_LENGTH 30000
-#define RESPONSE_BUFFER_SIZE 50000
+#define RESPONSE_BUFFER_SIZE 6000
 #define RESPONSE_MAX_LEN 2000000
 
 
