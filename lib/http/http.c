@@ -149,7 +149,7 @@ char *SSLRequest(REQUEST_HEADER_INFO *request_header_info) {
     printf(ANSI_COLOR_GREEN "\nLOG: Closed socket at descriptor %d" ANSI_COLOR_RESET, sockFD);
     freeRequestHeaderInfo(request_header_info);
 
-    return response;
+    return strstr(response, "<head>");
 }
 
 /**
@@ -178,7 +178,7 @@ char *noSSLRequest(REQUEST_HEADER_INFO *request_header_info) {
     serverPort = 80;
     memset(&serverAddress, 0, sizeof(serverAddress));
     serverAddress.sin_family = AF_INET;
-    serverAddress.sin_port = htons(80);
+    serverAddress.sin_port = htons(serverPort);
     inet_aton(serverIP, &serverAddress.sin_addr);
 
     if (connect(sockFD, (const struct sockaddr *) &serverAddress, sizeof(serverAddress)) < 0) {
