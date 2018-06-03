@@ -10,7 +10,6 @@ add_executable(MAINEXE main.cpp main.hpp lib/http/http.cpp lib/scraper/scraper.c
 
 
 target_link_libraries(MAINEXE ssl)
-target_link_libraries(MAINEXE tidy)
 
 
 
