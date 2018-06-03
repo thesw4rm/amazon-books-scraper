@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <memory.h>
 #include <stdlib.h>
-#include "user_input.h"
+#include "user_input.hpp"
 
 /**
 * TODO: Implement
@@ -33,12 +33,12 @@ REQUEST_HEADER_INFO* extractRequestDataFromURL(char* URL) {
     //Extract host.
     char *hostStart = strstr(URL, "://") + 3;
     size_t hostLength = strcspn(hostStart, "/");
-    host = malloc(sizeof(char) * hostLength);
+    host = static_cast<char *>(malloc(sizeof(char) * hostLength));
     strncpy(host, hostStart, hostLength);
 
     //Extract path, use localPath as placeholder for mallocing the correct size
     char *localPath = hostStart + hostLength;
-    path = malloc(sizeof(char) * strlen(localPath));
+    path = static_cast<char *>(malloc(sizeof(char) * strlen(localPath)));
     strncpy(path, localPath, sizeof(char) * strlen(localPath));
 
 
@@ -54,17 +54,15 @@ REQUEST_HEADER_INFO* extractRequestDataFromURL(char* URL) {
     else
         printf("\tExtracted ssl: ssl = false\n");
     printf(ANSI_COLOR_RESET);
-    REQUEST_HEADER_INFO *requestInfo = (REQUEST_HEADER_INFO *) malloc(sizeof(struct requestHeaderInfo));
+    auto *requestInfo = (REQUEST_HEADER_INFO *) malloc(sizeof(struct requestHeaderInfo));
     requestInfo->host = host;
     requestInfo->path = path;
-    requestInfo->ssl = malloc(sizeof(bool));
-    *(requestInfo->ssl) = ssl;
+    requestInfo->ssl = ssl;
     return requestInfo;
 }
 
 void freeRequestHeaderInfo(REQUEST_HEADER_INFO* req){
     free(req->path);
-    free(req->ssl);
     free(req->host);
     free(req);
 }

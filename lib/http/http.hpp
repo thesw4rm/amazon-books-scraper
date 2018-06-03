@@ -6,7 +6,7 @@
 #ifndef WEBSCRAPER_HTTP_H
 #define WEBSCRAPER_HTTP_H
 
-#include "../user_input/user_input.h"
+#include "../user_input/user_input.hpp"
 
 #define REQUEST_HEADER_MAX_LENGTH 30000
 #define RESPONSE_BUFFER_SIZE 6000

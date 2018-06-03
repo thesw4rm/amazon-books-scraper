@@ -11,11 +11,11 @@
 #include <netdb.h>
 #include <ctype.h>
 #include <openssl/ssl.h>
-#include "http.h"
+#include "http.hpp"
 
 char *craftRequestHeader(REQUEST_HEADER_INFO *request_header_info) {
-    char *requestHeader = calloc(REQUEST_HEADER_MAX_LENGTH,
-                                 sizeof(char)); //Create empty request header to fill with snprintf
+    auto *requestHeader = static_cast<char *>(calloc(REQUEST_HEADER_MAX_LENGTH,
+                                                     sizeof(char))); //Create empty request header to fill with snprintf
 
 
     snprintf(requestHeader, REQUEST_HEADER_MAX_LENGTH, "GET %s HTTP/1.1\r\nHost: %s\r\n\r\n", request_header_info->path,
@@ -34,19 +34,19 @@ char *SSLRequest(REQUEST_HEADER_INFO *request_header_info);
 
 char *getHTMLBody(char *URL) {
     REQUEST_HEADER_INFO *request_header_info = extractRequestDataFromURL(getScrapeLink());
-    if (*(request_header_info->ssl))
+    if (request_header_info->ssl)
         return SSLRequest(request_header_info);
     else
         return noSSLRequest(request_header_info);
 }
 
 char *SSLRequest(REQUEST_HEADER_INFO *request_header_info) {
-    struct sockaddr_in serverAddress;
+    struct sockaddr_in serverAddress{};
     char *requestHeader;
     unsigned short serverPort;
     char serverIP[16];
     domainToIP(request_header_info->host, serverIP);
-    char *response = calloc(0, 0);
+    auto *response = static_cast<char *>(calloc(0, 0));
     ssize_t bytesReceived = 0;
 
 
@@ -113,7 +113,7 @@ char *SSLRequest(REQUEST_HEADER_INFO *request_header_info) {
     char buffer[RESPONSE_BUFFER_SIZE + 1];
     bytesReceived += SSL_read(conn, buffer, RESPONSE_BUFFER_SIZE);
     buffer[strlen(buffer)] = '\0';
-    response = realloc(response, strlen(buffer) * sizeof(char));
+    response = static_cast<char *>(realloc(response, strlen(buffer) * sizeof(char)));
     strcpy(response, buffer); //Append to the end, safe because recv takes care of limiting buffer size
 
     char *contentLengthStart = strstr(response, "Content-Length:");
@@ -130,11 +130,11 @@ char *SSLRequest(REQUEST_HEADER_INFO *request_header_info) {
     while (bytesReceived < totalBytesInResponse) {
         bytesReceived += SSL_read(conn, buffer, RESPONSE_BUFFER_SIZE);
         buffer[strlen(buffer)] = '\0';
-        response = realloc(response, (strlen(response) + strlen(buffer)) * sizeof(char));
+        response = static_cast<char *>(realloc(response, (strlen(response) + strlen(buffer)) * sizeof(char)));
         strcat(response, buffer); //Append to the end, safe because recv takes care of limiting buffer size
     }
 
-    response = realloc(response, strlen(response) * sizeof(char) + sizeof(char));
+    response = static_cast<char *>(realloc(response, strlen(response) * sizeof(char) + sizeof(char)));
     response[strlen(response)] = '\0';
     char *htmlBodyEnd = strstr(response, "</html>") + 7;
     *htmlBodyEnd = '\0';
@@ -148,7 +148,8 @@ char *SSLRequest(REQUEST_HEADER_INFO *request_header_info) {
     }
     printf(ANSI_COLOR_GREEN "\nLOG: Closed socket at descriptor %d" ANSI_COLOR_RESET, sockFD);
     freeRequestHeaderInfo(request_header_info);
-
+    response = static_cast<char *>(realloc(response, strlen(response) * sizeof(char) + sizeof(char)));
+    *strstr(response, "</html") = '\0';
     return strstr(response, "<head>");
 }
 
@@ -156,12 +157,12 @@ char *SSLRequest(REQUEST_HEADER_INFO *request_header_info) {
  * TODO: Need to fix
  */
 char *noSSLRequest(REQUEST_HEADER_INFO *request_header_info) {
-    struct sockaddr_in serverAddress;
+    struct sockaddr_in serverAddress{};
     char *requestHeader;
     unsigned short serverPort;
     char serverIP[16];
     domainToIP(request_header_info->host, serverIP);
-    char *response = calloc(0, 0);
+    auto *response = static_cast<char *>(calloc(0, 0));
     ssize_t bytesReceived = 0;
 
 
@@ -211,7 +212,7 @@ char *noSSLRequest(REQUEST_HEADER_INFO *request_header_info) {
     char buffer[RESPONSE_BUFFER_SIZE + 1];
     bytesReceived += recv(sockFD, buffer, RESPONSE_BUFFER_SIZE, 0);
     buffer[strlen(buffer)] = '\0';
-    response = realloc(response, strlen(buffer) * sizeof(char));
+    response = static_cast<char *>(realloc(response, strlen(buffer) * sizeof(char)));
     strcpy(response, buffer); //Append to the end, safe because recv takes care of limiting buffer size
 
     char *contentLengthStart = strstr(response, "Content-Length:");
@@ -228,14 +229,13 @@ char *noSSLRequest(REQUEST_HEADER_INFO *request_header_info) {
     while (bytesReceived < totalBytesInResponse) {
         bytesReceived += recv(sockFD, buffer, RESPONSE_BUFFER_SIZE, 0);
         buffer[strlen(buffer)] = '\0';
-        response = realloc(response, (strlen(response) + strlen(buffer)) * sizeof(char));
+        response = static_cast<char *>(realloc(response, (strlen(response) + strlen(buffer)) * sizeof(char)));
         strcat(response, buffer); //Append to the end, safe because recv takes care of limiting buffer size
     }
 
-    response = realloc(response, strlen(response) * sizeof(char) + sizeof(char));
-    response[strlen(response)] = '\0';
-    char *htmlBodyEnd = strstr(response, "</html>") + 7;
-    *htmlBodyEnd = '\0';
+    response = static_cast<char *>(realloc(response, strlen(response) * sizeof(char) + sizeof(char)));
+    response[response + strlen(response) - strstr(response, "</html")] = '\0';
+
     printf(ANSI_COLOR_GREEN "\nLOG: Received HTTP response from socket at descriptor %d from IP %s and port %d.\n\n\n\n\n" ANSI_COLOR_RESET,
            sockFD, serverIP, serverPort);
     if (close(sockFD) < 0) {

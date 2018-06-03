@@ -5,6 +5,11 @@
 #ifndef WEBSCRAPER_SCRAPER_H
 #define WEBSCRAPER_SCRAPER_H
 
+#define DEFAULT_TAG_NAME_SIZE 10
+#define DEFAULT_TAG_CONTENT_SIZE 100
+#define DEFAULT_TAG_ATTR_SIZE 40
+
+
 typedef struct Element {
     char *tagName;
     char *tagContent;
@@ -14,8 +19,10 @@ typedef struct Element {
 
 extern Element *extractedElements[];
 
-void parseHTML(char *html);
-static void addElement(Element *element);
+
+
+void parseHTML(const char *html);
+char * doubleSize(char *charPointer);
 void searchElement(char *tagName, char *tagAttr[]);
 void freeAll();
 

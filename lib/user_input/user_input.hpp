@@ -5,7 +5,7 @@
 #ifndef WEBSCRAPER_MAIN_INPUTS_H
 #define WEBSCRAPER_MAIN_INPUTS_H
 
-#include "../types/types.h"
+#include "../types/types.hpp"
 
 /**
  * @param host- Request host
@@ -15,7 +15,7 @@
 typedef struct requestHeaderInfo {
     char *host;
     char *path;
-    bool *ssl;
+    bool ssl;
 } REQUEST_HEADER_INFO;
 
 /**
